@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumio — Get started</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Instrument+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0e0d0c;--bg:#fdfaf5;--white:#ffffff;--rule:#e8e3db;--soft:#f5f1eb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',sans-serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column;}
+
+/* NAV */
+.top{padding:1.8rem 4rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--rule);flex-shrink:0;}
+.logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;color:var(--ink);text-decoration:none;}
+.top-right{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.3;}
+
+/* PROGRESS */
+.progress{display:flex;gap:5px;padding:2rem 4rem 0;flex-shrink:0;}
+.seg{flex:1;height:1px;background:var(--rule);transition:background .4s;}
+.seg.on{background:var(--ink);}
+
+/* BODY */
+.body{flex:1;display:flex;align-items:center;padding:3.5rem 4rem 4rem;}
+
+/* STEPS */
+.step{display:none;max-width:540px;width:100%;}
+.step.active{display:block;animation:rise .45s ease both;}
+.eyebrow{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--ink);opacity:0.28;margin-bottom:1rem;}
+.ob-title{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;color:var(--ink);margin-bottom:2.4rem;}
+.ob-title em{font-style:italic;}
+
+/* FIELDS */
+.fields{display:flex;flex-direction:column;gap:2rem;margin-bottom:2.4rem;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.field{display:flex;flex-direction:column;}
+.lbl{font-size:0.57rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink);opacity:0.35;margin-bottom:0.7rem;}
+input,select{background:transparent;border:none;border-bottom:1px solid var(--rule);padding:.5rem 0;font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:400;color:var(--ink);outline:none;transition:border-color .2s;-webkit-appearance:none;border-radius:0;}
+input:focus,select:focus{border-color:var(--ink);}
+input::placeholder{color:var(--ink);opacity:.18;font-style:italic;}
+
+/* GOALS */
+.goals{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:2.4rem;}
+.goal{padding:.38rem .85rem;border:1px solid var(--rule);font-size:.73rem;color:var(--ink);opacity:.5;cursor:pointer;transition:all .15s;background:transparent;font-family:'Instrument Sans',sans-serif;}
+.goal:hover{opacity:1;border-color:var(--ink);}
+.goal.on{opacity:1;border-color:var(--ink);background:var(--soft);}
+
+/* CONNECT OPTIONS */
+.connect-opts{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:2.4rem;}
+.opt{background:var(--white);padding:1.5rem 1.6rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s;border:none;text-align:left;width:100%;}
+.opt:hover{background:var(--soft);}
+.opt.on{background:var(--soft);border-left:2px solid var(--ink);}
+.opt-name{font-family:'Playfair Display',serif;font-size:.98rem;color:var(--ink);font-weight:500;margin-bottom:.2rem;}
+.opt-desc{font-size:.7rem;color:var(--ink);opacity:.38;}
+.opt-tag{font-size:.56rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:.3;border:1px solid var(--rule);padding:.22rem .5rem;flex-shrink:0;}
+.opt.on .opt-tag{opacity:.8;border-color:var(--ink);}
+
+/* BANK PANEL */
+.bank-panel{display:none;border:1px solid var(--rule);background:var(--white);padding:1.8rem;margin-bottom:1.6rem;}
+.bank-panel.show{display:block;animation:rise .4s ease both;}
+.bank-search{width:100%;background:transparent;border:none;border-bottom:1px solid var(--rule);padding:.5rem 0;font-family:'Instrument Sans',sans-serif;font-size:.88rem;color:var(--ink);outline:none;margin-bottom:1rem;}
+.bank-search::placeholder{color:var(--ink);opacity:.25;}
+.bank-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);}
+.bank{background:var(--bg);padding:.85rem 1rem;font-size:.82rem;color:var(--ink);cursor:pointer;transition:background .15s;border:none;text-align:left;font-family:'Instrument Sans',sans-serif;opacity:.65;}
+.bank:hover{background:var(--soft);opacity:1;}
+.bank.on{background:var(--soft);opacity:1;border-left:2px solid var(--ink);}
+
+/* LOADING */
+.loading{display:none;flex-direction:column;gap:1.2rem;padding:1rem 0 2rem;}
+.loading.show{display:flex;animation:rise .4s ease both;}
+.spinner{width:28px;height:28px;border:1px solid var(--rule);border-top-color:var(--ink);border-radius:50%;animation:spin 1s linear infinite;}
+.load-label{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink);opacity:.35;}
+.load-msg{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--ink);opacity:.4;min-height:1.4rem;}
+
+/* MANUAL */
+.manual{display:none;}
+.manual.show{display:block;animation:rise .4s ease both;}
+.manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem 2rem;margin-bottom:2.4rem;}
+
+/* ACTIONS */
+.actions{display:flex;align-items:center;gap:2rem;margin-top:.4rem;}
+.btn-next{background:var(--ink);color:var(--bg);padding:.9rem 2rem;font-family:'Instrument Sans',sans-serif;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border:none;transition:opacity .2s;}
+.btn-next:hover:not(:disabled){opacity:.72;}
+.btn-next:disabled{opacity:.2;cursor:not-allowed;}
+.btn-back{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:.28;cursor:pointer;background:none;border:none;font-family:'Instrument Sans',sans-serif;transition:opacity .2s;}
+.btn-back:hover{opacity:.8;}
+.footnote{font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);opacity:.2;margin-top:1.2rem;}
+
+@keyframes rise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:820px){
+  .top{padding:1.4rem 1.5rem;}
+  .progress{padding:1.5rem 1.5rem 0;}
+  .body{padding:2.5rem 1.5rem 3rem;}
+  .row2,.manual-grid{grid-template-columns:1fr;gap:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a class="logo" href="lumio-landing.html">Lumio</a>
+  <span class="top-right" id="step-label">Step 1 of 4</span>
+</div>
+
+<div class="progress">
+  <div class="seg" id="s0"></div>
+  <div class="seg" id="s1"></div>
+  <div class="seg" id="s2"></div>
+  <div class="seg" id="s3"></div>
+</div>
+
+<div class="body">
+
+  <!-- STEP 1: PROFILE -->
+  <div class="step active" id="step0">
+    <p class="eyebrow">Step 1 of 4</p>
+    <h2 class="ob-title">Tell us about<br /><em>you.</em></h2>
+    <div class="fields">
+      <div class="field">
+        <label class="lbl">First name</label>
+        <input id="f-name" type="text" placeholder="Your name" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label class="lbl">Age</label>
+          <input id="f-age" type="number" placeholder="—" min="13" max="100" />
+        </div>
+        <div class="field">
+          <label class="lbl">Life stage</label>
+          <select id="f-stage">
+            <option value="">Select</option>
+            <option>Student</option>
+            <option>Early career</option>
+            <option>Mid career</option>
+            <option>Senior career</option>
+            <option>Business owner</option>
+            <option>Pre-retirement</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-next" id="n0" disabled onclick="goTo(1)">Continue</button>
+    </div>
+    <p class="footnote">Your information is never stored or shared</p>
+  </div>
+
+  <!-- STEP 2: GOALS -->
+  <div class="step" id="step1">
+    <p class="eyebrow">Step 2 of 4</p>
+    <h2 class="ob-title">What are you<br /><em>working toward?</em></h2>
+    <div class="goals" id="goals">
+      <button class="goal" onclick="toggleGoal(this)">Buy a home</button>
+      <button class="goal" onclick="toggleGoal(this)">Grow investments</button>
+      <button class="goal" onclick="toggleGoal(this)">Pay off debt</button>
+      <button class="goal" onclick="toggleGoal(this)">Build emergency fund</button>
+      <button class="goal" onclick="toggleGoal(this)">Start a business</button>
+      <button class="goal" onclick="toggleGoal(this)">Early retirement</button>
+      <button class="goal" onclick="toggleGoal(this)">Buy a car</button>
+      <button class="goal" onclick="toggleGoal(this)">Travel</button>
+      <button class="goal" onclick="toggleGoal(this)">Start a family</button>
+      <button class="goal" onclick="toggleGoal(this)">Save for education</button>
+    </div>
+    <div class="actions">
+      <button class="btn-next" id="n1" disabled onclick="goTo(2)">Continue</button>
+      <button class="btn-back" onclick="goTo(0)">← Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: SITUATION -->
+  <div class="step" id="step2">
+    <p class="eyebrow">Step 3 of 4</p>
+    <h2 class="ob-title">Your financial<br /><em>situation.</em></h2>
+    <div class="fields">
+      <div class="row2">
+        <div class="field">
+          <label class="lbl">Monthly income ($)</label>
+          <input id="f-income" type="number" placeholder="0" />
+        </div>
+        <div class="field">
+          <label class="lbl">Current savings ($)</label>
+          <input id="f-savings" type="number" placeholder="0" />
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label class="lbl">Total debt ($)</label>
+          <input id="f-debt" type="number" placeholder="0" />
+        </div>
+        <div class="field">
+          <label class="lbl">Debt type</label>
+          <select id="f-debttype">
+            <option value="">None</option>
+            <option>Student loans</option>
+            <option>Credit card</option>
+            <option>Car loan</option>
+            <option>Mortgage</option>
+            <option>Mixed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-next" onclick="goTo(3)">Continue</button>
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: CONNECT -->
+  <div class="step" id="step3">
+    <p class="eyebrow">Step 4 of 4</p>
+    <h2 class="ob-title">Connect your<br /><em>finances.</em></h2>
+
+    <div class="connect-opts">
+      <button class="opt" id="opt-bank" onclick="selectMethod('bank')">
+        <div>
+          <div class="opt-name">Connect your bank</div>
+          <div class="opt-desc">Automatic, accurate, read-only access to your transactions</div>
+        </div>
+        <span class="opt-tag">Recommended</span>
+      </button>
+      <button class="opt" id="opt-manual" onclick="selectMethod('manual')">
+        <div>
+          <div class="opt-name">Enter manually</div>
+          <div class="opt-desc">Type in your income and spending categories yourself</div>
+        </div>
+        <span class="opt-tag">Manual</span>
+      </button>
+    </div>
+
+    <!-- Bank flow -->
+    <div class="bank-panel" id="bank-panel">
+      <p class="lbl" style="margin-bottom:.8rem">Search for your bank</p>
+      <input class="bank-search" id="bank-search" type="text" placeholder="e.g. Chase, Bank of America..." oninput="filterBanks(this.value)" />
+      <div class="bank-list" id="bank-list">
+        <button class="bank" onclick="pickBank(this)">Chase</button>
+        <button class="bank" onclick="pickBank(this)">Bank of America</button>
+        <button class="bank" onclick="pickBank(this)">Wells Fargo</button>
+        <button class="bank" onclick="pickBank(this)">Citibank</button>
+        <button class="bank" onclick="pickBank(this)">Capital One</button>
+        <button class="bank" onclick="pickBank(this)">US Bank</button>
+        <button class="bank" onclick="pickBank(this)">TD Bank</button>
+        <button class="bank" onclick="pickBank(this)">PNC Bank</button>
+        <button class="bank" onclick="pickBank(this)">Ally Bank</button>
+        <button class="bank" onclick="pickBank(this)">Marcus by Goldman Sachs</button>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <span class="load-label">Connecting securely</span>
+      <span class="load-msg" id="load-msg">Establishing secure connection...</span>
+    </div>
+
+    <!-- Manual entry -->
+    <div class="manual" id="manual-panel">
+      <div class="manual-grid">
+        <div class="field"><label class="lbl">Housing ($/mo)</label><input id="m-housing" type="number" placeholder="0"/></div>
+        <div class="field"><label class="lbl">Food ($/mo)</label><input id="m-food" type="number" placeholder="0"/></div>
+        <div class="field"><label class="lbl">Transport ($/mo)</label><input id="m-transport" type="number" placeholder="0"/></div>
+        <div class="field"><label class="lbl">Utilities ($/mo)</label><input id="m-utilities" type="number" placeholder="0"/></div>
+        <div class="field"><label class="lbl">Health ($/mo)</label><input id="m-health" type="number" placeholder="0"/></div>
+        <div class="field"><label class="lbl">Entertainment ($/mo)</label><input id="m-entertainment" type="number" placeholder="0"/></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-next" id="n3" disabled onclick="generatePlan()">Generate my plan</button>
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+    </div>
+    <p class="footnote">256-bit encryption · Read-only access · Disconnect anytime</p>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const MSGS = [
+    'Establishing secure connection...',
+    'Verifying with your bank...',
+    'Reading your transactions...',
+    'Analysing spending patterns...',
+    'Almost ready...'
+  ];
+
+  function updateProgress(n) {
+    document.getElementById('step-label').textContent = 'Step ' + (n+1) + ' of 4';
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('s' + i).className = 'seg' + (i <= n ? ' on' : '');
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('step' + current).classList.remove('active');
+    current = n;
+    document.getElementById('step' + current).classList.add('active');
+    updateProgress(n);
+    window.scrollTo(0, 0);
+  }
+
+  // Step 1 validation
+  function checkStep0() {
+    const ok = document.getElementById('f-name').value.trim() &&
+                document.getElementById('f-age').value &&
+                document.getElementById('f-stage').value;
+    document.getElementById('n0').disabled = !ok;
+  }
+  ['f-name','f-age','f-stage'].forEach(id => {
+    document.getElementById(id).addEventListener('input', checkStep0);
+    document.getElementById(id).addEventListener('change', checkStep0);
+  });
+
+  // Step 2 goals
+  function toggleGoal(el) {
+    el.classList.toggle('on');
+    const any = document.querySelectorAll('.goal.on').length > 0;
+    document.getElementById('n1').disabled = !any;
+  }
+
+  // Step 4 connect
+  let method = '';
+  function selectMethod(m) {
+    method = m;
+    document.getElementById('opt-bank').classList.toggle('on', m === 'bank');
+    document.getElementById('opt-manual').classList.toggle('on', m === 'manual');
+    document.getElementById('bank-panel').classList.toggle('show', m === 'bank');
+    document.getElementById('manual-panel').classList.toggle('show', m === 'manual');
+    document.getElementById('loading').classList.remove('show');
+    if (m === 'manual') document.getElementById('n3').disabled = false;
+    if (m === 'bank') document.getElementById('n3').disabled = true;
+  }
+
+  const allBanks = ['Chase','Bank of America','Wells Fargo','Citibank','Capital One','US Bank','TD Bank','PNC Bank','Ally Bank','Marcus by Goldman Sachs'];
+  function filterBanks(q) {
+    const list = document.getElementById('bank-list');
+    list.innerHTML = allBanks
+      .filter(b => b.toLowerCase().includes(q.toLowerCase()))
+      .map(b => `<button class="bank" onclick="pickBank(this)">${b}</button>`)
+      .join('');
+  }
+
+  function pickBank(el) {
+    document.querySelectorAll('.bank').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    // Simulate connection loading
+    document.getElementById('bank-panel').classList.remove('show');
+    const loading = document.getElementById('loading');
+    loading.classList.add('show');
+    let i = 0;
+    const msgEl = document.getElementById('load-msg');
+    msgEl.textContent = MSGS[0];
+    const iv = setInterval(() => {
+      i++;
+      if (i < MSGS.length) {
+        msgEl.textContent = MSGS[i];
+      } else {
+        clearInterval(iv);
+        loading.innerHTML = `
+          <div style="display:flex;align-items:center;gap:1rem">
+            <div style="width:28px;height:28px;border:1px solid var(--rule);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;">✓</div>
+            <span style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--ink);opacity:.6">Connected to ${el.textContent}</span>
+          </div>`;
+        document.getElementById('n3').disabled = false;
+      }
+    }, 900);
+  }
+
+  function generatePlan() {
+    window.location.href = 'lumio-plan.html';
+  }
+
+  updateProgress(0);
+</script>
+</body>
+</html>

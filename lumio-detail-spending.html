@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumio — Spending</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Instrument+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0e0d0c;--bg:#fdfaf5;--white:#ffffff;--rule:#e8e3db;--soft:#f5f1eb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',sans-serif;font-weight:300;min-height:100vh;}
+.top{padding:1.6rem 4rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--rule);position:sticky;top:0;background:rgba(253,250,245,0.96);backdrop-filter:blur(12px);z-index:10;}
+.logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;color:var(--ink);text-decoration:none;}
+.back{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.3;text-decoration:none;transition:opacity .2s;}
+.back:hover{opacity:1;}
+.main{max-width:780px;padding:3.5rem 4rem 6rem;}
+.eyebrow{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--ink);opacity:0.28;margin-bottom:.8rem;}
+.page-title{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;color:var(--ink);margin-bottom:2.4rem;}
+.page-title em{font-style:italic;}
+.sec-label{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--ink);opacity:0.28;margin-bottom:1rem;}
+.cat-rows{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:2.4rem;}
+.cat{background:var(--white);padding:1.2rem 1.4rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .15s;}
+.cat:hover{background:var(--soft);}
+.cat.open{background:var(--soft);}
+.cat-left{display:flex;flex-direction:column;gap:.25rem;}
+.cat-name{font-family:'Playfair Display',serif;font-size:.98rem;color:var(--ink);}
+.cat-bar-wrap{width:140px;height:2px;background:var(--rule);margin-top:.5rem;position:relative;}
+.cat-bar-fill{position:absolute;top:0;left:0;height:100%;background:var(--ink);opacity:.2;}
+.cat-bar-fill.warn{background:#c8843a;opacity:.6;}
+.cat-right{text-align:right;}
+.cat-val{font-family:'Playfair Display',serif;font-size:1rem;color:var(--ink);}
+.cat-pct{font-size:.65rem;color:var(--ink);opacity:.35;margin-top:.2rem;}
+.cat-tag{font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.18rem .4rem;border:1px solid var(--rule);color:var(--ink);opacity:.35;margin-top:.3rem;display:inline-block;}
+.cat-tag.warn{border-color:#c8843a;color:#c8843a;opacity:1;}
+.cat-tag.good{border-color:#3a7d5f;color:#3a7d5f;opacity:1;}
+.cat-detail{display:none;background:var(--bg);border-top:1px solid var(--rule);padding:1rem 1.4rem;}
+.cat-detail.open{display:block;}
+.tx-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--rule);}
+.tx-row:last-child{border-bottom:none;}
+.tx-name{font-size:.8rem;color:var(--ink);opacity:.7;}
+.tx-date{font-size:.62rem;color:var(--ink);opacity:.3;margin-top:.1rem;}
+.tx-val{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--ink);}
+.trend-wrap{background:var(--white);border:1px solid var(--rule);padding:1.4rem 1.6rem;margin-bottom:2rem;}
+.trend-label{font-size:.57rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink);opacity:.28;margin-bottom:1rem;}
+.trend-bars{display:flex;align-items:flex-end;gap:8px;height:80px;}
+.t-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;height:100%;}
+.t-bar{width:100%;background:var(--ink);opacity:.12;border-radius:1px;transition:opacity .2s;}
+.t-bar.cur{opacity:.35;}
+.t-month{font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:var(--ink);opacity:.3;}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade{animation:rise .5s ease both;}
+@media(max-width:820px){.top,.main{padding-left:1.5rem;padding-right:1.5rem;}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="logo" href="lumio-landing.html">Lumio</a>
+  <a class="back" href="lumio-dashboard.html">← Dashboard</a>
+</div>
+<div class="main">
+  <p class="eyebrow fade">Spending</p>
+  <h1 class="page-title fade">Where your<br/><em>money goes.</em></h1>
+
+  <div class="trend-wrap fade">
+    <div class="trend-label">Total spending — last 4 months</div>
+    <div class="trend-bars">
+      <div class="t-bar-wrap"><div class="t-bar" style="height:85%"></div><span class="t-month">Jan</span></div>
+      <div class="t-bar-wrap"><div class="t-bar" style="height:80%"></div><span class="t-month">Feb</span></div>
+      <div class="t-bar-wrap"><div class="t-bar" style="height:76%"></div><span class="t-month">Mar</span></div>
+      <div class="t-bar-wrap"><div class="t-bar cur" style="height:78%"></div><span class="t-month">Apr</span></div>
+    </div>
+  </div>
+
+  <p class="sec-label fade">Categories — tap to expand</p>
+  <div class="cat-rows fade" id="cats"></div>
+</div>
+<script>
+const categories = [
+  {name:'Housing',val:1400,pct:27,tag:'',txs:[{n:'Rent',d:'Apr 28',v:1400}]},
+  {name:'Food',val:680,pct:13,tag:'warn',txs:[{n:'Whole Foods',d:'Apr 24',v:84},{n:'Trader Joe\'s',d:'Apr 21',v:67},{n:'Chipotle',d:'Apr 19',v:18},{n:'Uber Eats',d:'Apr 16',v:42},{n:'Grocery run',d:'Apr 10',v:91},{n:'Coffee shops',d:'Apr 8',v:34}]},
+  {name:'Transport',val:320,pct:6,tag:'good',txs:[{n:'Metro card',d:'Apr 1',v:132},{n:'Uber',d:'Apr 14',v:24},{n:'Uber',d:'Apr 22',v:18},{n:'Gas',d:'Apr 17',v:58}]},
+  {name:'Student loan',val:650,pct:13,tag:'',txs:[{n:'Loan payment',d:'Apr 22',v:650}]},
+  {name:'Entertainment',val:340,pct:7,tag:'warn',txs:[{n:'Spotify',d:'Apr 20',v:11},{n:'Netflix',d:'Apr 15',v:16},{n:'Cinema',d:'Apr 12',v:28},{n:'Bar tab',d:'Apr 9',v:65},{n:'Books',d:'Apr 5',v:34}]},
+  {name:'Utilities',val:180,pct:3,tag:'good',txs:[{n:'Electric',d:'Apr 3',v:95},{n:'Internet',d:'Apr 3',v:85}]},
+  {name:'Health',val:80,pct:2,tag:'good',txs:[{n:'Gym membership',d:'Apr 1',v:45},{n:'Pharmacy',d:'Apr 18',v:35}]},
+  {name:'Savings',val:450,pct:9,tag:'good',txs:[{n:'Emergency fund transfer',d:'Apr 22',v:450}]},
+];
+
+const wrap = document.getElementById('cats');
+categories.forEach((c,i) => {
+  const div = document.createElement('div');
+  div.style.display='flex';div.style.flexDirection='column';
+  div.innerHTML = `
+    <div class="cat" onclick="toggle(${i})">
+      <div class="cat-left">
+        <span class="cat-name">${c.name}</span>
+        <div class="cat-bar-wrap"><div class="cat-bar-fill${c.tag==='warn'?' warn':''}" style="width:${Math.min(c.pct*3,100)}%"></div></div>
+      </div>
+      <div class="cat-right">
+        ${c.tag?`<span class="cat-tag ${c.tag}">${c.tag==='warn'?'Review':'Good'}</span><br/>`:''}
+        <span class="cat-val">$${c.val.toLocaleString()}</span>
+        <div class="cat-pct">${c.pct}% of income</div>
+      </div>
+    </div>
+    <div class="cat-detail" id="detail-${i}">
+      ${c.txs.map(t=>`<div class="tx-row"><div><div class="tx-name">${t.n}</div><div class="tx-date">${t.d}</div></div><span class="tx-val">$${t.v}</span></div>`).join('')}
+    </div>`;
+  wrap.appendChild(div);
+});
+
+function toggle(i) {
+  const d = document.getElementById('detail-'+i);
+  const c = d.previousElementSibling;
+  const open = d.classList.toggle('open');
+  c.classList.toggle('open', open);
+}
+</script>
+</body>
+</html>

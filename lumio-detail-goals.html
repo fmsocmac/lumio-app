@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumio — Goals</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Instrument+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0e0d0c;--bg:#fdfaf5;--white:#ffffff;--rule:#e8e3db;--soft:#f5f1eb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',sans-serif;font-weight:300;min-height:100vh;}
+.top{padding:1.6rem 4rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--rule);position:sticky;top:0;background:rgba(253,250,245,0.96);backdrop-filter:blur(12px);z-index:10;}
+.logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;color:var(--ink);text-decoration:none;}
+.back{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.3;text-decoration:none;transition:opacity .2s;}
+.back:hover{opacity:1;}
+.main{max-width:780px;padding:3.5rem 4rem 6rem;}
+.eyebrow{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--ink);opacity:0.28;margin-bottom:.8rem;}
+.page-title{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;color:var(--ink);margin-bottom:2.4rem;}
+.page-title em{font-style:italic;}
+.goal-cards{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:2.4rem;}
+.g-card{background:var(--white);padding:1.8rem 1.6rem;}
+.g-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem;}
+.g-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:500;color:var(--ink);}
+.g-tag{font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .45rem;border:1px solid var(--rule);color:var(--ink);opacity:.35;flex-shrink:0;margin-left:1rem;}
+.g-tag.active{border-color:#3a7d5f;color:#3a7d5f;opacity:1;}
+.g-tag.upcoming{border-color:#c8843a;color:#c8843a;opacity:1;}
+.g-progress-wrap{height:2px;background:var(--rule);margin-bottom:1.2rem;position:relative;}
+.g-progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--ink);opacity:.35;transition:width .6s ease;}
+.g-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.g-stat-label{font-size:.57rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:.28;margin-bottom:.3rem;}
+.g-stat-val{font-family:'Playfair Display',serif;font-size:1rem;color:var(--ink);}
+.g-advice{font-size:.78rem;color:var(--ink);opacity:.45;line-height:1.7;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rule);}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade{animation:rise .5s ease both;}
+.fade2{animation:rise .5s ease .1s both;}
+@media(max-width:820px){.top,.main{padding-left:1.5rem;padding-right:1.5rem;}.g-stats{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="logo" href="lumio-landing.html">Lumio</a>
+  <a class="back" href="lumio-dashboard.html">← Dashboard</a>
+</div>
+<div class="main">
+  <p class="eyebrow fade">Goals</p>
+  <h1 class="page-title fade">What you're<br/><em>working toward.</em></h1>
+  <div class="goal-cards fade2" id="goal-cards"></div>
+</div>
+<script>
+const goals = [
+  {name:'Build emergency fund',tag:'Active',tagClass:'active',saved:6200,target:8400,monthly:450,timeline:'7 months',pct:74,advice:'You\'re 74% of the way there. At $450/month you\'ll hit your target in approximately 7 months. Consider increasing this to $550/month to finish in 5 months.'},
+  {name:'Buy a home',tag:'Active',tagClass:'active',saved:3200,target:60000,monthly:640,timeline:'4–5 years',pct:5,advice:'You\'re building your down payment steadily. At $640/month you\'ll reach a 20% down payment on a $300k home in approximately 4.5 years. Look into first-time homebuyer programs in your state — many offer matching grants.'},
+  {name:'Grow investments',tag:'Active',tagClass:'active',saved:8400,target:null,monthly:300,timeline:'Ongoing',pct:null,advice:'Your Roth IRA is open and funded. Continue contributing $300/month. Over 30 years at a 7% average return, this grows to approximately $340,000 tax-free.'},
+  {name:'Pay off student loans',tag:'Active',tagClass:'active',saved:0,target:14000,monthly:650,timeline:'24 months',pct:0,advice:'Paying $650/month clears your loan in 24 months. Every extra $100 you add reduces that by roughly 2 months. Once clear, redirect that $650 entirely into investments.'},
+];
+
+const wrap = document.getElementById('goal-cards');
+goals.forEach(g => {
+  const hasPct = g.pct !== null;
+  wrap.innerHTML += `
+    <div class="g-card">
+      <div class="g-top">
+        <span class="g-name">${g.name}</span>
+        <span class="g-tag ${g.tagClass}">${g.tag}</span>
+      </div>
+      ${hasPct ? `<div class="g-progress-wrap"><div class="g-progress-fill" style="width:${g.pct}%"></div></div>` : ''}
+      <div class="g-stats">
+        <div><div class="g-stat-label">${g.target ? 'Saved' : 'Invested'}</div><div class="g-stat-val">$${g.saved.toLocaleString()}</div></div>
+        <div><div class="g-stat-label">${g.target ? 'Target' : 'Monthly'}</div><div class="g-stat-val">${g.target ? '$'+g.target.toLocaleString() : '$'+g.monthly+'/mo'}</div></div>
+        <div><div class="g-stat-label">Timeline</div><div class="g-stat-val">${g.timeline}</div></div>
+      </div>
+      <p class="g-advice">${g.advice}</p>
+    </div>`;
+});
+</script>
+</body>
+</html>
