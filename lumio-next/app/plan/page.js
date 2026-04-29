@@ -114,7 +114,8 @@ Respond ONLY with a valid JSON object, no markdown:
         })
       })
       const data = await res.json()
-      const raw = data.content.map(b => b.text || '').join('')
+console.log('API response:', JSON.stringify(data))
+const raw = data.content.map(b => b.text || '').join('')
       const clean = raw.replace(/```json|```/g, '').trim()
       setPlan(JSON.parse(clean))
     } catch (e) {
