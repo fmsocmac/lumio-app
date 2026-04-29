@@ -312,7 +312,7 @@ Respond ONLY with a valid JSON object, no markdown, no explanation. Use this exa
 }`;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -490,7 +490,7 @@ Respond ONLY with a valid JSON object, no markdown, no explanation. Use this exa
     document.getElementById('typing').classList.add('show');
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
