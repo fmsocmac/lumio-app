@@ -34,17 +34,18 @@ export default function Plan() {
   const chatRef = useRef(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('lumio_user')
-    if (saved) setUser(JSON.parse(saved))
+  const saved = localStorage.getItem('lumio_user')
+  const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
+  setUser(loadedUser)
 
-    let i = 0
-    const iv = setInterval(() => {
+  let i = 0
+  const iv = setInterval(() => {
       i++
       if (i < LOAD_MSGS.length) {
         setLoadMsg(LOAD_MSGS[i])
       } else {
         clearInterval(iv)
-        fetchPlan()
+        fetchPlan(loadedUser)
       }
     }, 900)
     return () => clearInterval(iv)
@@ -56,7 +57,7 @@ export default function Plan() {
     }
   }, [plan])
 
-  async function fetchPlan() {
+  async function fetchPlan(u = user) {
     const prompt = `You are Lumio, a personal financial advisor. Generate a complete financial plan for this person.
 
 Profile: ${user.name}, ${user.age}, ${user.stage}
