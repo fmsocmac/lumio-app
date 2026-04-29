@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from 'react'
 
 const DEFAULT_USER = {
-  name: 'Marcus',
-  age: 28,
-  stage: 'Early career',
-  income: 5200,
-  savings: 8400,
-  debt: 14000,
-  debtType: 'Student loans',
-  goals: ['Buy a home', 'Grow investments', 'Build emergency fund']
+  name: 'there',
+  age: '',
+  stage: '',
+  income: 0,
+  savings: 0,
+  debt: 0,
+  debtType: '',
+  goals: []
 }
 
 const LOAD_MSGS = [
@@ -34,12 +34,12 @@ export default function Plan() {
   const chatRef = useRef(null)
 
   useEffect(() => {
-  const saved = localStorage.getItem('lumio_user')
-  const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
-  setUser(loadedUser)
+    const saved = localStorage.getItem('lumio_user')
+    const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
+    setUser(loadedUser)
 
-  let i = 0
-  const iv = setInterval(() => {
+    let i = 0
+    const iv = setInterval(() => {
       i++
       if (i < LOAD_MSGS.length) {
         setLoadMsg(LOAD_MSGS[i])
@@ -57,48 +57,50 @@ export default function Plan() {
     }
   }, [plan])
 
-  async function fetchPlan(u = user) {
-    const prompt = `You are Lumio, a personal financial advisor. Generate a complete financial plan for this person.
+  async function fetchPlan(u) {
+    const prompt = `You are Lumio, a personal financial advisor. Generate a complete financial plan.
 
-Profile: ${user.name}, ${user.age}, ${user.stage}
-Monthly income: $${user.income}
-Savings: $${user.savings}
-Debt: $${user.debt} (${user.debtType})
-Goals: ${user.goals.join(', ')}
+Name: ${u.name}
+Age: ${u.age}
+Life stage: ${u.stage}
+Monthly income: $${u.income}
+Savings: $${u.savings}
+Debt: $${u.debt} (${u.debtType || 'none'})
+Goals: ${u.goals.join(', ') || 'not specified'}
 
-Respond ONLY with a valid JSON object, no markdown, no explanation:
+Respond ONLY with a valid JSON object, no markdown:
 {
   "score": 7.2,
-  "summary": "2-3 sentence personal summary addressing them by name",
+  "summary": "2-3 sentence personal summary using their name",
   "budget": {
     "rows": [
-      {"name":"Housing","amount":1400,"pct":70,"tag":""},
+      {"name":"Housing","amount":1400,"pct":68,"tag":""},
       {"name":"Food","amount":600,"pct":35,"tag":"warn"},
-      {"name":"Transport","amount":320,"pct":20,"tag":""},
-      {"name":"Savings","amount":520,"pct":30,"tag":"good"}
+      {"name":"Transport","amount":300,"pct":18,"tag":"good"},
+      {"name":"Savings","amount":500,"pct":30,"tag":"good"}
     ],
-    "advice": "2-3 sentences of specific budget advice"
+    "advice": "2-3 sentences of specific budget advice with numbers"
   },
   "invest": {
-    "intro": "1-2 sentence intro",
+    "intro": "1-2 sentence personalised intro",
     "steps": ["step 1","step 2","step 3","step 4"]
   },
   "goals": [
-    {"name":"Goal name","timeline":"X years","monthly":"$X/mo"}
+    {"name":"goal name","timeline":"X years","monthly":"$X/mo"}
   ],
-  "goalsAdvice": "1-2 sentences about their goals",
+  "goalsAdvice": "1-2 sentences about their specific goals",
   "debt": {
     "hasDebt": true,
-    "strategy": "2-3 sentences on exact debt payoff strategy",
+    "strategy": "specific debt payoff strategy with numbers",
     "timeline": "Debt-free in X months",
     "monthly": "$X/mo toward debt"
   },
   "action": {
-    "month1": ["action 1","action 2","action 3"],
-    "month2": ["action 1","action 2","action 3"],
-    "month3": ["action 1","action 2","action 3"]
+    "month1": ["specific action 1","specific action 2","specific action 3"],
+    "month2": ["specific action 1","specific action 2","specific action 3"],
+    "month3": ["specific action 1","specific action 2","specific action 3"]
   },
-  "chatIntro": "One warm sentence welcoming them and inviting questions"
+  "chatIntro": "warm one sentence welcome using their name"
 }`
 
     try {
@@ -116,10 +118,10 @@ Respond ONLY with a valid JSON object, no markdown, no explanation:
       const clean = raw.replace(/```json|```/g, '').trim()
       setPlan(JSON.parse(clean))
     } catch (e) {
-  console.log('Plan generation failed:', e)
-} finally {
-  setLoading(false)
-}      setLoading(false)
+      console.log('Plan error:', e)
+      setPlan(null)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -138,7 +140,7 @@ Respond ONLY with a valid JSON object, no markdown, no explanation:
           max_tokens: 1000,
           messages: [{
             role: 'user',
-            content: `You are Lumio. User plan: ${JSON.stringify(plan)}. Answer in 2-4 sentences, directly and specifically: ${q}`
+            content: `You are Lumio, a financial advisor. The user's plan: ${JSON.stringify(plan)}. Answer in 2-4 sentences: ${q}`
           }]
         })
       })
@@ -146,7 +148,7 @@ Respond ONLY with a valid JSON object, no markdown, no explanation:
       const reply = data.content.map(b => b.text || '').join('').trim()
       setChatMessages(m => [...m, { who: 'lumio', text: reply }])
     } catch {
-      setChatMessages(m => [...m, { who: 'lumio', text: "I'm having trouble connecting. Please try again." }])
+      setChatMessages(m => [...m, { who: 'lumio', text: 'Having trouble connecting. Please try again.' }])
     } finally {
       setChatLoading(false)
     }
@@ -158,6 +160,15 @@ Respond ONLY with a valid JSON object, no markdown, no explanation:
         <div className="plan-spinner"></div>
         <span className="plan-load-label">Building your plan</span>
         <span className="plan-load-msg">{loadMsg}</span>
+      </div>
+    )
+  }
+
+  if (!plan) {
+    return (
+      <div className="plan-loading">
+        <p className="plan-load-label">Something went wrong</p>
+        <a href="/onboarding" className="cta" style={{marginTop:'1rem'}}>Try again</a>
       </div>
     )
   }
