@@ -115,45 +115,11 @@ Respond ONLY with a valid JSON object, no markdown, no explanation:
       const raw = data.content.map(b => b.text || '').join('')
       const clean = raw.replace(/```json|```/g, '').trim()
       setPlan(JSON.parse(clean))
-    } catch {
-      setPlan({
-        score: 7.2,
-        summary: `${user.name}, you're in a solid position — steady income, meaningful savings, and clear goals. With a few focused adjustments you can accelerate significantly toward your targets.`,
-        budget: {
-          rows: [
-            { name: 'Housing', amount: 1400, pct: 68, tag: '' },
-            { name: 'Food', amount: 680, pct: 42, tag: 'warn' },
-            { name: 'Transport', amount: 320, pct: 20, tag: 'good' },
-            { name: 'Savings', amount: 520, pct: 32, tag: 'good' }
-          ],
-          advice: "Your housing cost is reasonable. Food spending is slightly elevated — trimming by $100 would add $1,200 to your savings annually."
-        },
-        invest: {
-          intro: "You have time on your side. The priority is tax-advantaged accounts first.",
-          steps: [
-            "Contribute enough to your 401(k) to get the full employer match",
-            "Open and max a Roth IRA at $7,000/year",
-            "Once debt is cleared, increase 401(k) contributions",
-            "Any remaining surplus into a low-cost index fund like VTI"
-          ]
-        },
-        goals: user.goals.map(g => ({ name: g, timeline: '3-5 years', monthly: '$400/mo' })),
-        goalsAdvice: "Build your emergency fund first before aggressively investing. Once that's done, split surplus between your goals.",
-        debt: {
-          hasDebt: Number(user.debt) > 0,
-          strategy: `Your $${Number(user.debt).toLocaleString()} in ${user.debtType} should be attacked aggressively. Pay minimums on all and throw every extra dollar at the highest interest loan first.`,
-          timeline: `Debt-free in ~${Math.ceil(user.debt / 650)} months`,
-          monthly: "$650/mo toward loans"
-        },
-        action: {
-          month1: ["Confirm you're getting your full 401(k) employer match", "Open a Roth IRA if you don't have one", "Set up automatic savings transfer"],
-          month2: ["Review food and entertainment spending", "Make one extra debt payment", "Research first-time homebuyer programs"],
-          month3: ["Reassess your budget progress", "Begin investing $300/month in index funds", "Open a dedicated savings account for your top goal"]
-        },
-        chatIntro: `${user.name}, your plan is ready — ask me anything about your finances and I'll give you a specific answer based on your situation.`
-      })
-    } finally {
-      setLoading(false)
+    } catch (e) {
+  console.log('Plan generation failed:', e)
+} finally {
+  setLoading(false)
+}      setLoading(false)
     }
   }
 
