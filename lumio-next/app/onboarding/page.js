@@ -194,7 +194,10 @@ export default function Onboarding() {
               </button>
             </div>
             <div className="ob-actions">
-              <button className="ob-next" onClick={() => window.location.href = '/plan'}>
+              <button className="ob-next" onClick={() => {
+  localStorage.setItem('lumio_user', JSON.stringify(form))
+  window.location.href = '/plan'
+}}>
                 Generate my plan
               </button>
               <button className="ob-back" onClick={() => setStep(2)}>← Back</button>
