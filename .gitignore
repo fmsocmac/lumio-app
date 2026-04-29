@@ -1,2 +1,4 @@
 node_modules
 .next
+lumio-next/node_modules/
+lumio-next/.next/
