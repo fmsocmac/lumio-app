@@ -117,7 +117,23 @@ Respond ONLY with a valid JSON object, no markdown:
 console.log('API response:', JSON.stringify(data))
 const raw = data.content.map(b => b.text || '').join('')
       const clean = raw.replace(/```json|```/g, '').trim()
-      setPlan(JSON.parse(clean))
+      const parsed = JSON.parse(clean)
+      setPlan(parsed)
+
+      // Save plan to database
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('plans').insert({
+          user_id: user.id,
+          score: parsed.score,
+          summary: parsed.summary,
+          budget: parsed.budget,
+          invest: parsed.invest,
+          goals: parsed.goals,
+          debt: parsed.debt,
+          action: parsed.action,
+        })
+      }
     } catch (e) {
       console.log('Plan error:', e)
       setPlan(null)
@@ -126,19 +142,19 @@ const raw = data.content.map(b => b.text || '').join('')
     }
   }
 // Save plan to database
-const { data: { user } } = await supabase.auth.getUser()
-if (user) {
-  await supabase.from('plans').insert({
-    user_id: user.id,
-    score: JSON.parse(clean).score,
-    summary: JSON.parse(clean).summary,
-    budget: JSON.parse(clean).budget,
-    invest: JSON.parse(clean).invest,
-    goals: JSON.parse(clean).goals,
-    debt: JSON.parse(clean).debt,
-    action: JSON.parse(clean).action,
-  })
-}
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      await supabase.from('plans').insert({
+        user_id: user.id,
+        score: JSON.parse(clean).score,
+        summary: JSON.parse(clean).summary,
+        budget: JSON.parse(clean).budget,
+        invest: JSON.parse(clean).invest,
+        goals: JSON.parse(clean).goals,
+        debt: JSON.parse(clean).debt,
+        action: JSON.parse(clean).action,
+      })
+    }
   async function sendChat() {
     if (!chatInput.trim() || chatLoading) return
     const q = chatInput.trim()
