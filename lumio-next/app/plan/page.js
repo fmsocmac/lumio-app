@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-
+import { supabase } from '../../lib/supabase'
 const DEFAULT_USER = {
   name: 'there',
   age: '',
@@ -125,7 +125,20 @@ const raw = data.content.map(b => b.text || '').join('')
       setLoading(false)
     }
   }
-
+// Save plan to database
+const { data: { user } } = await supabase.auth.getUser()
+if (user) {
+  await supabase.from('plans').insert({
+    user_id: user.id,
+    score: JSON.parse(clean).score,
+    summary: JSON.parse(clean).summary,
+    budget: JSON.parse(clean).budget,
+    invest: JSON.parse(clean).invest,
+    goals: JSON.parse(clean).goals,
+    debt: JSON.parse(clean).debt,
+    action: JSON.parse(clean).action,
+  })
+}
   async function sendChat() {
     if (!chatInput.trim() || chatLoading) return
     const q = chatInput.trim()
