@@ -141,7 +141,7 @@ const raw = data.content.map(b => b.text || '').join('')
           max_tokens: 1000,
           messages: [{
             role: 'user',
-            content: `You are Lumio, a financial advisor. The user's plan: ${JSON.stringify(plan)}. Answer in 2-4 sentences: ${q}`
+            content: `You are Lumio, a financial advisor. The user's financial health score is ${plan.score} out of 10. Their full plan: ${JSON.stringify(plan)}. Answer in 2-4 sentences, and always remember the score is out of 10: ${q}`
           }]
         })
       })

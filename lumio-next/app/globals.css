@@ -1040,3 +1040,36 @@ footer {
   .score-card { flex-direction: column; gap: 1.2rem; }
   .score-right { text-align: left; margin-left: 0; }
 }
+/* AUTH */
+.auth-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+.auth-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.auth-card { width: 100%; max-width: 420px; }
+
+.auth-error {
+  font-size: 0.75rem;
+  color: #9b2335;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.auth-switch {
+  font-size: 0.72rem;
+  color: var(--ink);
+  opacity: 0.4;
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--ink);
+  opacity: 1;
+  text-decoration: underline;
+}
