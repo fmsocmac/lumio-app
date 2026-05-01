@@ -139,28 +139,14 @@ export default function Dashboard() {
           {score && <p className="dash-insight">Your financial health score is <strong>{score}/10</strong>. Keep building toward your goals.</p>}
         </div>
 
-        <div className="dash-nw">
-          <div className="dash-nw-top">
-            <div>
-              <div className="dash-nw-label">Net worth</div>
-              <div className="dash-nw-value">$48,240</div>
-              <div className="dash-nw-change">Since January &nbsp;<span className="dash-nw-pos">↑ $6,840 (16.5%)</span></div>
-            </div>
-            <div className="dash-periods">
-              {['3m','6m','1y','all'].map(p => (
-                <button key={p} className={`dash-period ${period === p ? 'on' : ''}`} onClick={() => setPeriod(p)}>
-                  {p.toUpperCase()}
-                </button>
-              ))}
-            </div>
+        <div className="dash-nw-top">
+          <div>
+            <div className="dash-nw-label">Net worth</div>
+            <div className="dash-nw-value" style={{ fontSize: '1.4rem', opacity: 0.4 }}>Available with bank connection</div>
           </div>
-          <div className="dash-chart-wrap">
-            <canvas className="dash-canvas" ref={canvasRef} style={{ width: '100%', height: '200px', display: 'block' }} />
-            <div className="dash-chart-labels">
-              {PERIODS[period].labels.map((l, i) => (
-                <span key={i} className="dash-chart-label">{l}</span>
-              ))}
-            </div>
+          </div>
+          <div className="dash-chart-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '140px' }}>
+            <p style={{ fontSize: '0.72rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--ink)', opacity: 0.25 }}>Connect your bank to track net worth over time</p>
           </div>
         </div>
 
