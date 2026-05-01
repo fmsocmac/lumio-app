@@ -24,7 +24,6 @@ export default function Profile() {
   async function handleSave() {
     setSaving(true)
     localStorage.setItem('lumio_user', JSON.stringify(form))
-
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
       await supabase.from('users').upsert({
@@ -39,10 +38,21 @@ export default function Profile() {
         goals: form.goals,
       })
     }
-
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  async function handleDelete() {
+    const confirmed = window.confirm('Delete your account and all data? This cannot be undone.')
+    if (!confirmed) return
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      await supabase.from('plans').delete().eq('user_id', user.id)
+      await supabase.from('users').delete().eq('id', user.id)
+      await supabase.auth.signOut()
+    }
+    window.location.href = '/'
   }
 
   if (loading) return <div className="plan-loading"><div className="plan-spinner"></div></div>
@@ -55,12 +65,10 @@ export default function Profile() {
           <a href="/dashboard" className="nav-link">Dashboard</a>
         </div>
       </nav>
-
       <div className="auth-body" style={{ alignItems: 'flex-start', paddingTop: '3rem' }}>
         <div className="auth-card" style={{ maxWidth: '560px' }}>
           <p className="ob-eyebrow">Your profile</p>
           <h1 className="ob-title">Personal<br /><em>information.</em></h1>
-
           <div className="ob-fields">
             <div className="ob-field">
               <label className="ob-lbl">First name</label>
@@ -107,17 +115,6 @@ export default function Profile() {
               </div>
             </div>
           </div>
-        async function handleDelete() {
-            if (!confirm('Are you sure? This will permanently delete your account and all your data.')) return
-            
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
-                await supabase.from('plans').delete().eq('user_id', user.id)
-                await supabase.from('users').delete().eq('id', user.id)
-                await supabase.auth.signOut()
-            }
-            window.location.href = '/'
-            }
           <div className="ob-field" style={{ marginBottom: '1.6rem' }}>
             <label className="ob-lbl">Goals</label>
             <div className="ob-goals" style={{ marginTop: '0.6rem' }}>
@@ -126,30 +123,18 @@ export default function Profile() {
               ))}
             </div>
           </div>
-
           <button className="ob-next" onClick={handleSave} disabled={saving} style={{ width: '100%' }}>
-            {saving ? 'Saving...' : saved ? 'Saved ✓' : 'Save changes'}
+            {saving ? 'Saving...' : saved ? 'Saved' : 'Save changes'}
           </button>
-
           <div style={{ marginTop: '1.4rem', paddingTop: '1.4rem', borderTop: '1px solid var(--rule)' }}>
             <p className="ob-eyebrow" style={{ marginBottom: '0.8rem' }}>Regenerate your plan</p>
-            <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.45, lineHeight: 1.7, marginBottom: '1rem' }}>
-              After updating your information, regenerate your plan to get fresh advice based on your new situation.
-            </p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.45, lineHeight: 1.7, marginBottom: '1rem' }}>After updating your information, regenerate your plan to get fresh advice.</p>
             <a href="/plan?regen=true" className="p-btn" style={{ display: 'inline-block' }}>Regenerate plan</a>
-            <div style={{ marginTop: '2rem', paddingTop: '1.4rem', borderTop: '1px solid var(--rule)' }}>
-                <p className="ob-eyebrow" style={{ marginBottom: '0.8rem' }}>Danger zone</p>
-                <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.45, lineHeight: 1.7, marginBottom: '1rem' }}>
-                    Permanently delete your account and all associated data. This cannot be undone.
-                </p>
-                <button
-                    className="p-btn"
-                    style={{ borderColor: '#9b2335', color: '#9b2335' }}
-                    onClick={handleDelete}
-                >
-                    Delete account
-                </button>
-            </div>
+          </div>
+          <div style={{ marginTop: '2rem', paddingTop: '1.4rem', borderTop: '1px solid var(--rule)' }}>
+            <p className="ob-eyebrow" style={{ marginBottom: '0.8rem' }}>Danger zone</p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.45, lineHeight: 1.7, marginBottom: '1rem' }}>Permanently delete your account and all data. This cannot be undone.</p>
+            <button className="p-btn" style={{ borderColor: '#9b2335', color: '#9b2335' }} onClick={handleDelete}>Delete account</button>
           </div>
         </div>
       </div>
