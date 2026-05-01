@@ -35,22 +35,52 @@ export default function Plan() {
   const chatRef = useRef(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('lumio_user')
-    const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
-    setUser(loadedUser)
+  const saved = localStorage.getItem('lumio_user')
+  const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
+  setUser(loadedUser)
+  checkForExistingPlan(loadedUser)
+}, [])
 
-    let i = 0
-    const iv = setInterval(() => {
-      i++
-      if (i < LOAD_MSGS.length) {
-        setLoadMsg(LOAD_MSGS[i])
-      } else {
-        clearInterval(iv)
-        fetchPlan(loadedUser)
-      }
-    }, 900)
-    return () => clearInterval(iv)
-  }, [])
+async function checkForExistingPlan(loadedUser) {
+  const { data: { user: authUser } } = await supabase.auth.getUser()
+  
+  if (authUser) {
+    const { data: existingPlan } = await supabase
+      .from('plans')
+      .select('*')
+      .eq('user_id', authUser.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (existingPlan) {
+      setPlan({
+        score: existingPlan.score,
+        summary: existingPlan.summary,
+        budget: existingPlan.budget,
+        invest: existingPlan.invest,
+        goals: existingPlan.goals,
+        debt: existingPlan.debt,
+        action: existingPlan.action,
+        chatIntro: `Welcome back ${loadedUser.name}. Your plan is ready — ask me anything.`
+      })
+      setLoading(false)
+      return
+    }
+  }
+
+  // No existing plan — generate a new one
+  let i = 0
+  const iv = setInterval(() => {
+    i++
+    if (i < LOAD_MSGS.length) {
+      setLoadMsg(LOAD_MSGS[i])
+    } else {
+      clearInterval(iv)
+      fetchPlan(loadedUser)
+    }
+  }, 900)
+}
 
   useEffect(() => {
     if (plan) {
