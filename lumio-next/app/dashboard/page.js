@@ -115,7 +115,6 @@ export default function Dashboard() {
       <nav>
         <a className="logo" href="/">Lumio</a>
         <div className="nav-right">
-          <a href="/plan" className="nav-link">My Plan</a>
           <button className="nav-cta">Upgrade</button>
         </div>
       </nav>
