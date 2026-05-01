@@ -54,13 +54,13 @@ export default function Plan() {
     if (!forceRegen) {
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (authUser) {
-        const { data: existingPlan } = await supabase
+        const { data: existingPlan, error: planError } = await supabase
           .from('plans')
           .select('*')
           .eq('user_id', authUser.id)
           .order('created_at', { ascending: false })
           .limit(1)
-          .single()
+          .maybeSingle()
 
         if (existingPlan) {
           setPlan({
