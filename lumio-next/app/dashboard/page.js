@@ -55,7 +55,10 @@ export default function Dashboard() {
       .limit(1)
       .single()
     if (data) setPlan(data)
-  }
+    if (data) {
+  console.log('Plan from DB:', JSON.stringify(data))
+  setPlan(data)
+}
 
   function drawChart(data) {
     const canvas = canvasRef.current
