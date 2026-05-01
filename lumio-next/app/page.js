@@ -88,14 +88,19 @@ export default function Home() {
             <a href="/signup" className="p-btn">Get started</a>
           </div>
           <div className="p-tier premium">
-            <div className="p-top">
-              <span className="p-name">Premium</span>
-              <span className="p-price">$12 / mo</span>
-            </div>
+            <div className="p-top"><span className="p-name">Premium</span><span className="p-price">$12 / mo</span></div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.55, lineHeight: 1.7, marginBottom: '1.4rem' }}>
+              Your personal CFO. Lumio watches your finances every week, checks in on your progress, and updates your plan as your life changes.
+            </p>
             <div className="p-items">
-              {['Unlimited plan updates','Full dashboard','Bank connection','All six plan tabs','Unlimited chat','Monthly refresh'].map(i => (
-                <span className="p-item" key={i}>{i}</span>
-              ))}
+              <span className="p-item">Unlimited plan updates</span>
+              <span className="p-item">Full dashboard</span>
+              <span className="p-item">Bank connection via Plaid</span>
+              <span className="p-item">All six plan tabs</span>
+              <span className="p-item">Unlimited chat</span>
+              <span className="p-item">Weekly check-in emails</span>
+              <span className="p-item">Monthly plan refresh</span>
+              <span className="p-item">Net worth tracking</span>
             </div>
             <a href="/signup" className="p-btn strong">Start free trial</a>
           </div>
