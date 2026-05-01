@@ -49,7 +49,6 @@ export default function Dashboard() {
     console.log('loadPlan called')
     const { data: { user } } = await supabase.auth.getUser()
     console.log('Auth user:', user?.id)
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       window.location.href = '/login'
       return
