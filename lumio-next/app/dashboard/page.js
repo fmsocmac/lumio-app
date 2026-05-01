@@ -115,6 +115,7 @@ export default function Dashboard() {
       <nav>
         <a className="logo" href="/">Lumio</a>
         <div className="nav-right">
+          <a href="/profile" className="nav-link">Profile</a>
           <button className="nav-cta">Upgrade</button>
         </div>
       </nav>
