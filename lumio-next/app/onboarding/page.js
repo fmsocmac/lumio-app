@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 export default function Onboarding() {
+  const [method, setMethod] = useState('')
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
     name: '',
@@ -177,15 +178,16 @@ export default function Onboarding() {
           <div className="ob-step">
             <p className="ob-eyebrow">Step 4 of 4</p>
             <h1 className="ob-title">Connect your<br /><em>finances.</em></h1>
+
             <div className="ob-connect-opts">
-              <button className="ob-opt">
+              <button className={`ob-opt ${method === 'bank' ? 'on' : ''}`} onClick={() => setMethod('bank')}>
                 <div>
                   <div className="ob-opt-name">Connect your bank</div>
                   <div className="ob-opt-desc">Automatic, accurate, read-only access to your transactions</div>
                 </div>
                 <span className="ob-opt-tag">Recommended</span>
               </button>
-              <button className="ob-opt">
+              <button className={`ob-opt ${method === 'manual' ? 'on' : ''}`} onClick={() => setMethod('manual')}>
                 <div>
                   <div className="ob-opt-name">Enter manually</div>
                   <div className="ob-opt-desc">Type in your income and spending categories yourself</div>
@@ -193,18 +195,66 @@ export default function Onboarding() {
                 <span className="ob-opt-tag">Manual</span>
               </button>
             </div>
-            <div className="ob-actions">
-              <button className="ob-next" onClick={() => {
-  localStorage.setItem('lumio_user', JSON.stringify(form))
-  window.location.href = '/plan'
-}}>
-                Generate my plan
-              </button>
-              <button className="ob-back" onClick={() => setStep(2)}>← Back</button>
-            </div>
-            <p className="ob-note">256-bit encryption · Read-only access · Disconnect anytime</p>
-          </div>
-        )}
+
+            {method === 'manual' && (
+              <div className="ob-fields" style={{ marginBottom: '1.6rem' }}>
+                <div className="ob-row2">
+                  <div className="ob-field">
+                    <label className="ob-lbl">Housing ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.housing || ''} onChange={e => update('housing', e.target.value)} />
+                  </div>
+                  <div className="ob-field">
+                    <label className="ob-lbl">Food ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.food || ''} onChange={e => update('food', e.target.value)} />
+                  </div>
+                </div>
+                <div className="ob-row2">
+                  <div className="ob-field">
+                    <label className="ob-lbl">Transport ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.transport || ''} onChange={e => update('transport', e.target.value)} />
+                  </div>
+                  <div className="ob-field">
+                    <label className="ob-lbl">Entertainment ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.entertainment || ''} onChange={e => update('entertainment', e.target.value)} />
+                  </div>
+                </div>
+                <div className="ob-row2">
+                  <div className="ob-field">
+                    <label className="ob-lbl">Utilities ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.utilities || ''} onChange={e => update('utilities', e.target.value)} />
+                  </div>
+                  <div className="ob-field">
+                    <label className="ob-lbl">Other ($/mo)</label>
+                    <input className="ob-input" type="number" placeholder="0" value={form.other || ''} onChange={e => update('other', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+    {method === 'bank' && (
+      <div className="ob-fields" style={{ marginBottom: '1.6rem' }}>
+        <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.5, lineHeight: 1.7 }}>
+          Bank connection via Plaid coming soon. For now please use manual entry.
+        </p>
+      </div>
+    )}
+
+    <div className="ob-actions">
+      <button
+        className="ob-next"
+        disabled={!method}
+        onClick={() => {
+          localStorage.setItem('lumio_user', JSON.stringify(form))
+          window.location.href = '/plan'
+        }}
+      >
+        Generate my plan
+      </button>
+      <button className="ob-back" onClick={() => setStep(2)}>← Back</button>
+    </div>
+    <p className="ob-note">256-bit encryption · Read-only access · Disconnect anytime</p>
+  </div>
+)}
 
       </div>
     </div>
