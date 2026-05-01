@@ -13,18 +13,24 @@ export default function Signup() {
     setLoading(true)
     setError('')
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
+    const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+})
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      window.location.href = '/onboarding'
-    }
+if (error) {
+  setError(error.message)
+  setLoading(false)
+} else {
+  // Save user to users table
+  if (data.user) {
+    await supabase.from('users').insert({
+      id: data.user.id,
+      email: email,
+    })
   }
+  window.location.href = '/onboarding'
+}
 
   return (
     <div className="auth-wrap">
