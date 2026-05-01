@@ -39,7 +39,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (canvasRef.current) drawChart(PERIODS[period])
-  }, [period, canvasRef.current])
+  }, [period])
+
+  useEffect(() => {
+    if (canvasRef.current && plan) drawChart(PERIODS[period])
+  }, [plan])
 
   async function loadPlan() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -47,18 +51,20 @@ export default function Dashboard() {
       window.location.href = '/login'
       return
     }
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('plans')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1)
       .single()
-    if (data) setPlan(data)
+
     if (data) {
-  console.log('Plan from DB:', JSON.stringify(data))
-  setPlan(data)
-}
+      console.log('Plan from DB:', JSON.stringify(data))
+      setPlan(data)
+    }
+    if (error) console.log('Load plan error:', error)
+  }
 
   function drawChart(data) {
     const canvas = canvasRef.current
@@ -109,7 +115,7 @@ export default function Dashboard() {
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const score = plan?.score || null
-  const goals = plan?.goals || []
+  const goals = Array.isArray(plan?.goals) ? plan.goals : []
   const nearestGoal = goals[0] || null
   const debt = plan?.debt || null
 
@@ -158,34 +164,34 @@ export default function Dashboard() {
 
         <p className="dash-cards-label">Your snapshot</p>
         <div className="dash-cards">
-          <div className="dash-card">
+          <a href="/plan" className="dash-card">
             <div className="dash-card-label">Health score</div>
             <span className="dash-card-tag good">Your rating</span>
             <div className="dash-card-value">{score ? `${score}/10` : '—'}</div>
             <div className="dash-card-sub">Based on your full financial picture</div>
-            <a href="/plan" className="dash-card-arrow">View plan →</a>
-          </div>
-          <div className="dash-card">
+            <div className="dash-card-arrow">View plan →</div>
+          </a>
+          <a href="/plan" className="dash-card">
             <div className="dash-card-label">Nearest goal</div>
             <span className="dash-card-tag good">Active</span>
             <div className="dash-card-value">{nearestGoal ? nearestGoal.name : '—'}</div>
             <div className="dash-card-sub">{nearestGoal ? `${nearestGoal.monthly} · ${nearestGoal.timeline}` : 'Set your goals'}</div>
-            <a href="/plan" className="dash-card-arrow">View goals →</a>
-          </div>
-          <div className="dash-card">
+            <div className="dash-card-arrow">View goals →</div>
+          </a>
+          <a href="/plan" className="dash-card">
             <div className="dash-card-label">Debt status</div>
             <span className={`dash-card-tag ${debt?.hasDebt ? 'warn' : 'good'}`}>{debt?.hasDebt ? 'In progress' : 'Debt free'}</span>
             <div className="dash-card-value">{debt?.hasDebt ? debt.timeline : 'No debt'}</div>
             <div className="dash-card-sub">{debt?.hasDebt ? debt.monthly : 'Keep it up'}</div>
-            <a href="/plan" className="dash-card-arrow">View strategy →</a>
-          </div>
-          <div className="dash-card">
+            <div className="dash-card-arrow">View strategy →</div>
+          </a>
+          <a href="/plan" className="dash-card">
             <div className="dash-card-label">Investment plan</div>
             <span className="dash-card-tag good">Active</span>
             <div className="dash-card-value">Step by step</div>
             <div className="dash-card-sub">Personalised to your age and income</div>
-            <a href="/plan" className="dash-card-arrow">View roadmap →</a>
-          </div>
+            <div className="dash-card-arrow">View roadmap →</div>
+          </a>
         </div>
 
       </div>
