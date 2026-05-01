@@ -122,6 +122,7 @@ Respond ONLY with a valid JSON object, no markdown:
 
       // Save plan to database
       const { data: { user: authUser } } = await supabase.auth.getUser()
+      console.log('Auth user:', authUser?.id)
       if (authUser) {
         await supabase.from('plans').insert({
           user_id: authUser.id,
