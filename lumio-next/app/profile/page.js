@@ -107,7 +107,17 @@ export default function Profile() {
               </div>
             </div>
           </div>
-
+        async function handleDelete() {
+            if (!confirm('Are you sure? This will permanently delete your account and all your data.')) return
+            
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                await supabase.from('plans').delete().eq('user_id', user.id)
+                await supabase.from('users').delete().eq('id', user.id)
+                await supabase.auth.signOut()
+            }
+            window.location.href = '/'
+            }
           <div className="ob-field" style={{ marginBottom: '1.6rem' }}>
             <label className="ob-lbl">Goals</label>
             <div className="ob-goals" style={{ marginTop: '0.6rem' }}>
@@ -127,6 +137,19 @@ export default function Profile() {
               After updating your information, regenerate your plan to get fresh advice based on your new situation.
             </p>
             <a href="/plan?regen=true" className="p-btn" style={{ display: 'inline-block' }}>Regenerate plan</a>
+            <div style={{ marginTop: '2rem', paddingTop: '1.4rem', borderTop: '1px solid var(--rule)' }}>
+                <p className="ob-eyebrow" style={{ marginBottom: '0.8rem' }}>Danger zone</p>
+                <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.45, lineHeight: 1.7, marginBottom: '1rem' }}>
+                    Permanently delete your account and all associated data. This cannot be undone.
+                </p>
+                <button
+                    className="p-btn"
+                    style={{ borderColor: '#9b2335', color: '#9b2335' }}
+                    onClick={handleDelete}
+                >
+                    Delete account
+                </button>
+            </div>
           </div>
         </div>
       </div>
