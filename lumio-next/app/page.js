@@ -6,7 +6,7 @@ export default function Home() {
         <div className="nav-right">
           <a href="#how">How it works</a>
           <a href="#pricing">Pricing</a>
-          <a href="/onboarding" className="nav-cta">Get started</a>
+          <a href="/signup" className="nav-cta">Get started</a>
         </div>
       </nav>
 
@@ -18,7 +18,7 @@ export default function Home() {
           financial plan — budgeting, investing, debt, and a clear
           path to every goal.
         </p>
-        <a href="/onboarding" className="cta">Get your free plan</a>
+        <a href="/signup" className="cta">Get your free plan</a>
         <p className="hero-note">
           Free to start · Bank-level encryption · Read-only access
         </p>
@@ -84,7 +84,7 @@ export default function Home() {
                 <span className="p-item" key={i}>{i}</span>
               ))}
             </div>
-            <a href="/onboarding" className="p-btn">Get started</a>
+            <a href="/signup" className="p-btn">Get started</a>
           </div>
           <div className="p-tier premium">
             <div className="p-top">
@@ -96,7 +96,7 @@ export default function Home() {
                 <span className="p-item" key={i}>{i}</span>
               ))}
             </div>
-            <a href="/onboarding" className="p-btn strong">Start free trial</a>
+            <a href="/signup" className="p-btn strong">Start free trial</a>
           </div>
         </div>
       </section>
@@ -106,7 +106,7 @@ export default function Home() {
       <section className="closing">
         <h2>Your money,<br /><em>understood.</em></h2>
         <p>Join thousands of people who finally have a clear, honest picture of their finances — and a real plan to improve them.</p>
-        <a href="/onboarding" className="cta">Get your free plan</a>
+        <a href="/signup" className="cta">Get your free plan</a>
       </section>
 
       <footer>
