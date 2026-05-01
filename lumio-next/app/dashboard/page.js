@@ -59,7 +59,7 @@ export default function Dashboard() {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
 
     if (data) {
       console.log('Plan from DB:', JSON.stringify(data))
