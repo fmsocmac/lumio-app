@@ -2,13 +2,14 @@ export default function Home() {
   return (
     <>
       <nav>
-        <div className="logo">Lumio</div>
-        <div className="nav-right">
-          <a href="#how">How it works</a>
-          <a href="#pricing">Pricing</a>
-          <a href="/signup" className="nav-cta">Get started</a>
-        </div>
-      </nav>
+  <div className="logo">Lumio</div>
+  <div className="nav-right">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/login">Sign in</a>
+    <a href="/signup" className="nav-cta">Get started</a>
+  </div>
+</nav>
 
       <main className="hero">
         <p className="hero-label">Personal financial advisor</p>
