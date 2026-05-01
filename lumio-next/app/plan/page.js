@@ -35,75 +35,61 @@ export default function Plan() {
   const chatRef = useRef(null)
 
   useEffect(() => {
-  const saved = localStorage.getItem('lumio_user')
-  const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
-  setUser(loadedUser)
-  checkForExistingPlan(loadedUser)
-}, [])
-
-    async function checkForExistingPlan(loadedUser) {
-      const params = new URLSearchParams(window.location.search)
-      const forceRegen = params.get('regen') === 'true'
-
-      if (!forceRegen) {
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        if (authUser) {
-          const { data: existingPlan } = await supabase
-            .from('plans')
-            .select('*')
-            .eq('user_id', authUser.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single()
-
-          if (existingPlan) {
-            setPlan({
-              score: existingPlan.score,
-              summary: existingPlan.summary,
-              budget: existingPlan.budget,
-              invest: existingPlan.invest,
-              goals: existingPlan.goals,
-              debt: existingPlan.debt,
-              action: existingPlan.action,
-              chatIntro: `Welcome back ${loadedUser.name}. Your plan is ready — ask me anything.`
-            })
-            setLoading(false)
-            return
-          }
-        }
-      }
-
-  // No existing plan or force regen — generate a new one
-  let i = 0
-  const iv = setInterval(() => {
-    i++
-    if (i < LOAD_MSGS.length) {
-      setLoadMsg(LOAD_MSGS[i])
-    } else {
-      clearInterval(iv)
-      fetchPlan(loadedUser)
-    }
-  }, 900)
-}
-
-  // No existing plan — generate a new one
-  let i = 0
-  const iv = setInterval(() => {
-    i++
-    if (i < LOAD_MSGS.length) {
-      setLoadMsg(LOAD_MSGS[i])
-    } else {
-      clearInterval(iv)
-      fetchPlan(loadedUser)
-    }
-  }, 900)
-}
+    const saved = localStorage.getItem('lumio_user')
+    const loadedUser = saved ? JSON.parse(saved) : DEFAULT_USER
+    setUser(loadedUser)
+    checkForExistingPlan(loadedUser)
+  }, [])
 
   useEffect(() => {
     if (plan) {
       setChatMessages([{ who: 'lumio', text: plan.chatIntro }])
     }
   }, [plan])
+
+  async function checkForExistingPlan(loadedUser) {
+    const params = new URLSearchParams(window.location.search)
+    const forceRegen = params.get('regen') === 'true'
+
+    if (!forceRegen) {
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (authUser) {
+        const { data: existingPlan } = await supabase
+          .from('plans')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (existingPlan) {
+          setPlan({
+            score: existingPlan.score,
+            summary: existingPlan.summary,
+            budget: existingPlan.budget,
+            invest: existingPlan.invest,
+            goals: existingPlan.goals,
+            debt: existingPlan.debt,
+            action: existingPlan.action,
+            chatIntro: `Welcome back ${loadedUser.name}. Your plan is ready — ask me anything.`
+          })
+          setLoading(false)
+          return
+        }
+      }
+    }
+
+    let i = 0
+    const iv = setInterval(() => {
+      i++
+      if (i < LOAD_MSGS.length) {
+        setLoadMsg(LOAD_MSGS[i])
+      } else {
+        clearInterval(iv)
+        fetchPlan(loadedUser)
+      }
+    }, 900)
+  }
 
   async function fetchPlan(u) {
     const prompt = `You are Lumio, a personal financial advisor. Generate a complete financial plan.
@@ -167,22 +153,20 @@ Respond ONLY with a valid JSON object, no markdown:
       const parsed = JSON.parse(clean)
       setPlan(parsed)
 
-      // Save plan to database
       const { data: { user: authUser } } = await supabase.auth.getUser()
-      console.log('Auth user:', authUser?.id)
       if (authUser) {
-  const { data, error } = await supabase.from('plans').insert({
-    user_id: authUser.id,
-    score: parsed.score,
-    summary: parsed.summary,
-    budget: parsed.budget,
-    invest: parsed.invest,
-    goals: parsed.goals,
-    debt: parsed.debt,
-    action: parsed.action,
-  })
-  console.log('Insert result:', data, 'Error:', error)
-}
+        const { data: insertData, error: insertError } = await supabase.from('plans').insert({
+          user_id: authUser.id,
+          score: parsed.score,
+          summary: parsed.summary,
+          budget: parsed.budget,
+          invest: parsed.invest,
+          goals: parsed.goals,
+          debt: parsed.debt,
+          action: parsed.action,
+        })
+        console.log('Insert result:', insertData, 'Error:', insertError)
+      }
     } catch (e) {
       console.log('Plan error:', e)
       setPlan(null)
@@ -244,8 +228,8 @@ Respond ONLY with a valid JSON object, no markdown:
       <nav>
         <a className="logo" href="/">Lumio</a>
         <div className="nav-right">
-          <a href="/onboarding" className="nav-link">Retake</a>
-          <button className="nav-cta">Upgrade</button>
+          <a href="/dashboard" className="nav-link">Dashboard</a>
+          <a href="/profile" className="nav-link">Profile</a>
         </div>
       </nav>
 
