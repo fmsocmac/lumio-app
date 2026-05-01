@@ -124,17 +124,18 @@ Respond ONLY with a valid JSON object, no markdown:
       const { data: { user: authUser } } = await supabase.auth.getUser()
       console.log('Auth user:', authUser?.id)
       if (authUser) {
-        await supabase.from('plans').insert({
-          user_id: authUser.id,
-          score: parsed.score,
-          summary: parsed.summary,
-          budget: parsed.budget,
-          invest: parsed.invest,
-          goals: parsed.goals,
-          debt: parsed.debt,
-          action: parsed.action,
-        })
-      }
+  const { data, error } = await supabase.from('plans').insert({
+    user_id: authUser.id,
+    score: parsed.score,
+    summary: parsed.summary,
+    budget: parsed.budget,
+    invest: parsed.invest,
+    goals: parsed.goals,
+    debt: parsed.debt,
+    action: parsed.action,
+  })
+  console.log('Insert result:', data, 'Error:', error)
+}
     } catch (e) {
       console.log('Plan error:', e)
       setPlan(null)
