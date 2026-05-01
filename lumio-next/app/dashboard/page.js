@@ -1,32 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
-const PERIODS = {
-  '3m': {
-    values: [44200,45100,45800,46200,46900,47400,47800,48240],
-    labels: ['Feb','','','Mar','','','Apr','']
-  },
-  '6m': {
-    values: [41400,42100,42800,43200,44200,45100,45800,46200,46900,47400,47800,48240],
-    labels: ['Nov','','Jan','','Feb','','Mar','','Apr','','','']
-  },
-  '1y': {
-    values: [36000,36800,37500,38200,38900,39400,40100,41000,42100,43200,45100,48240],
-    labels: ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr']
-  },
-  'all': {
-    values: [28000,29500,31000,32400,33800,35200,36000,37500,39400,41000,43200,48240],
-    labels: ['2023','','','','','','2024','','','','','Now']
-  }
-}
-
 export default function Dashboard() {
-  const [period, setPeriod] = useState('6m')
   const [name, setName] = useState('there')
   const [plan, setPlan] = useState(null)
-  const canvasRef = useRef(null)
 
   useEffect(() => {
     const saved = localStorage.getItem('lumio_user')
@@ -37,18 +16,8 @@ export default function Dashboard() {
     loadPlan()
   }, [])
 
-  useEffect(() => {
-    if (canvasRef.current) drawChart(PERIODS[period])
-  }, [period])
-
-  useEffect(() => {
-    if (canvasRef.current && plan) drawChart(PERIODS[period])
-  }, [plan])
-
   async function loadPlan() {
-    console.log('loadPlan called')
     const { data: { user } } = await supabase.auth.getUser()
-    console.log('Auth user:', user?.id)
     if (!user) {
       window.location.href = '/login'
       return
@@ -61,58 +30,8 @@ export default function Dashboard() {
       .limit(1)
       .maybeSingle()
 
-    if (data) {
-      console.log('Plan from DB:', JSON.stringify(data))
-      setPlan(data)
-    }
+    if (data) setPlan(data)
     if (error) console.log('Load plan error:', error)
-  }
-
-  function drawChart(data) {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const dpr = window.devicePixelRatio || 1
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    ctx.scale(dpr, dpr)
-    const W = rect.width
-    const H = rect.height
-    const pad = { top: 10, right: 10, bottom: 10, left: 10 }
-    const vals = data.values
-    const min = Math.min(...vals) * 0.97
-    const max = Math.max(...vals) * 1.01
-    const x = i => pad.left + (i / (vals.length - 1)) * (W - pad.left - pad.right)
-    const y = v => pad.top + (1 - (v - min) / (max - min)) * (H - pad.top - pad.bottom)
-    ctx.strokeStyle = 'rgba(14,13,12,0.06)'
-    ctx.lineWidth = 1
-    ;[0.25, 0.5, 0.75].forEach(t => {
-      const yy = pad.top + t * (H - pad.top - pad.bottom)
-      ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(W - pad.right, yy); ctx.stroke()
-    })
-    const grad = ctx.createLinearGradient(0, 0, 0, H)
-    grad.addColorStop(0, 'rgba(14,13,12,0.07)')
-    grad.addColorStop(1, 'rgba(14,13,12,0)')
-    ctx.beginPath()
-    ctx.moveTo(x(0), y(vals[0]))
-    vals.forEach((v, i) => { if (i > 0) ctx.lineTo(x(i), y(v)) })
-    ctx.lineTo(x(vals.length - 1), H)
-    ctx.lineTo(x(0), H)
-    ctx.closePath()
-    ctx.fillStyle = grad
-    ctx.fill()
-    ctx.beginPath()
-    ctx.moveTo(x(0), y(vals[0]))
-    vals.forEach((v, i) => { if (i > 0) ctx.lineTo(x(i), y(v)) })
-    ctx.strokeStyle = 'rgba(14,13,12,0.7)'
-    ctx.lineWidth = 1.5
-    ctx.lineJoin = 'round'
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.arc(x(vals.length - 1), y(vals[vals.length - 1]), 3, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(14,13,12,0.9)'
-    ctx.fill()
   }
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
@@ -139,11 +58,12 @@ export default function Dashboard() {
           {score && <p className="dash-insight">Your financial health score is <strong>{score}/10</strong>. Keep building toward your goals.</p>}
         </div>
 
-        <div className="dash-nw-top">
-          <div>
-            <div className="dash-nw-label">Net worth</div>
-            <div className="dash-nw-value" style={{ fontSize: '1.4rem', opacity: 0.4 }}>Available with bank connection</div>
-          </div>
+        <div className="dash-nw">
+          <div className="dash-nw-top">
+            <div>
+              <div className="dash-nw-label">Net worth</div>
+              <div className="dash-nw-value" style={{ fontSize: '1.4rem', opacity: 0.4 }}>Available with bank connection</div>
+            </div>
           </div>
           <div className="dash-chart-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '140px' }}>
             <p style={{ fontSize: '0.72rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--ink)', opacity: 0.25 }}>Connect your bank to track net worth over time</p>
