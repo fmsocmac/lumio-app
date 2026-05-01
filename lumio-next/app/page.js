@@ -76,16 +76,17 @@ export default function Home() {
         <div className="side-title">Plans we<br /><em>offer.</em></div>
         <div className="p-stack">
           <div className="p-tier">
-            <div className="p-top">
-              <span className="p-name">Free</span>
-              <span className="p-price">$0</span>
-            </div>
+            <div className="p-top"><span className="p-name">Free</span><span className="p-price">$0</span></div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--ink)', opacity: 0.55, lineHeight: 1.7, marginBottom: '1.4rem' }}>
+              Get started with a single personalised financial plan. See what Lumio can do for you.
+            </p>
             <div className="p-items">
-              {['One financial plan','Basic budget view','Goal setting','Manual entry'].map(i => (
-                <span className="p-item" key={i}>{i}</span>
-              ))}
+              <span className="p-item">One financial plan</span>
+              <span className="p-item">Basic budget view</span>
+              <span className="p-item">Goal setting</span>
+              <span className="p-item">Manual entry only</span>
             </div>
-            <a href="/signup" className="p-btn">Get started</a>
+            <a href="/signup" className="p-btn">Get started free</a>
           </div>
           <div className="p-tier premium">
             <div className="p-top"><span className="p-name">Premium</span><span className="p-price">$12 / mo</span></div>
