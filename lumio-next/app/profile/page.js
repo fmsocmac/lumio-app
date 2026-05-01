@@ -42,19 +42,21 @@ export default function Profile() {
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
-
   async function handleDelete() {
     const confirmed = window.confirm('Delete your account and all data? This cannot be undone.')
     if (!confirmed) return
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      await supabase.from('plans').delete().eq('user_id', user.id)
-      await supabase.from('users').delete().eq('id', user.id)
-      await supabase.auth.signOut()
+        await fetch('/api/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id })
+        })
+        await supabase.auth.signOut()
     }
     window.location.href = '/'
-  }
-
+    }
+  
   if (loading) return <div className="plan-loading"><div className="plan-spinner"></div></div>
 
   return (
