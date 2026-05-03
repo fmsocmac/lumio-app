@@ -15,7 +15,7 @@ export default function Home() {
         <p className="hero-label">Personal financial advisor</p>
         <h1>Finally understand<br /><em>your money.</em></h1>
         <p className="hero-sub">
-          Lumio connects to your bank and delivers a personalised
+          Lumio analyzes your cash flow and delivers a personalized
           financial plan — budgeting, investing, debt, and a clear
           path to every goal.
         </p>
