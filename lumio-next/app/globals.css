@@ -69,7 +69,7 @@ nav {
 
 .nav-cta {
   opacity: 1 !important;
-  border: 1px solid var(--accent) !important; color: var(--accent)!important;
+  border: 1px solid var(--accent) !important; color: var(--accent)
   padding: .45rem 1.1rem;
 }
 
