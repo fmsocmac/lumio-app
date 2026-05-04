@@ -40,6 +40,13 @@ export default function Dashboard() {
   const nearestGoal = goals[0] || null
   const debt = plan?.debt || null
 
+  function getGreeting() {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 17) return 'Good afternoon'
+    return 'Good evening'
+  }
+
   return (
     <div className="dash-wrap">
       <nav>
@@ -54,7 +61,7 @@ export default function Dashboard() {
 
         <div className="dash-greeting">
           <p className="dash-date">{today}</p>
-          <h1 className="dash-title">Good morning, <em>{name}.</em></h1>
+          <h1 className="dash-title">{getGreeting()}, <em>{name}.</em></h1>          
           {score && <p className="dash-insight">Your financial health score is <strong>{score}/10</strong>. Keep building toward your goals.</p>}
         </div>
 
