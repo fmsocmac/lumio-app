@@ -49,10 +49,7 @@ export default function Dashboard() {
     if (hour < 17) return 'Good afternoon'
     return 'Good evening'
   }
-  const [whatIf, setWhatIf] = useState('')
-  const [whatIfResult, setWhatIfResult] = useState('')
-  const [whatIfLoading, setWhatIfLoading] = useState(false)
-
+  
   async function analyseWhatIf() {
     if (!whatIf.trim() || whatIfLoading) return
     setWhatIfLoading(true)
