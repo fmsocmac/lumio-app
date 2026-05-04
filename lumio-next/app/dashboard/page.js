@@ -47,13 +47,13 @@ export default function Dashboard() {
       setWeeklyBudget(Math.round(monthly / 4.3))
     }
 
-  const [weeklyBudget, setWeeklyBudget] = useState(null)
+      const [weeklyBudget, setWeeklyBudget] = useState(null)
 
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-  const score = plan?.score || null
-  const goals = Array.isArray(plan?.goals) ? plan.goals : []
-  const nearestGoal = goals[0] || null
-  const debt = plan?.debt || null
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+      const score = plan?.score || null
+      const goals = Array.isArray(plan?.goals) ? plan.goals : []
+      const nearestGoal = goals[0] || null
+      const debt = plan?.debt || null
 
   function getGreeting() {
     const hour = new Date().getHours()
