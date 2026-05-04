@@ -35,7 +35,11 @@ export default function Dashboard() {
 
     if (data) setPlan(data)
     if (error) console.log('Load plan error:', error)
+
+    setWeeklyBudget(calculateWeeklyBudget())
   }
+
+  const [weeklyBudget, setWeeklyBudget] = useState(null)
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const score = plan?.score || null
@@ -49,7 +53,17 @@ export default function Dashboard() {
     if (hour < 17) return 'Good afternoon'
     return 'Good evening'
   }
-  
+
+  {weeklyBudget && (
+    <div className="dash-weekly">
+      <p className="dash-cards-label">Weekly spending budget</p>
+      <div className="dash-weekly-card">
+        <div className="dash-weekly-amount">${weeklyBudget.toLocaleString()}</div>
+        <p className="dash-weekly-sub">Your flexible spending budget this week — food, entertainment, and discretionary purchases. Unspent rolls over to next week.</p>
+      </div>
+    </div>
+  )}
+
   async function analyseWhatIf() {
     if (!whatIf.trim() || whatIfLoading) return
     setWhatIfLoading(true)
@@ -81,7 +95,16 @@ export default function Dashboard() {
     }
   }
 
-  
+  function calculateWeeklyBudget() {
+    if (!plan) return null
+    const income = parseFloat(localStorage.getItem('lumio_user') ? JSON.parse(localStorage.getItem('lumio_user')).income : 0)
+    const fixedExpenses = plan.budget?.rows?.reduce((sum, row) => {
+      const fixed = ['Housing', 'Utilities', 'Transport']
+      return fixed.includes(row.name) ? sum + row.amount : sum
+    }, 0) || 0
+    const monthly = income - fixedExpenses
+    return Math.round(monthly / 4.3)
+  }
 
   return (
     <div className="dash-wrap">
