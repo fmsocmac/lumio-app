@@ -33,10 +33,17 @@ export default function Dashboard() {
       .limit(1)
       .maybeSingle()
 
-    if (data) setPlan(data)
-    if (error) console.log('Load plan error:', error)
-
-    setWeeklyBudget(calculateWeeklyBudget())
+    if (data) {
+      setPlan(data)
+      const saved = localStorage.getItem('lumio_user')
+      const income = saved ? parseFloat(JSON.parse(saved).income) : 0
+      const fixedExpenses = data.budget?.rows?.reduce((sum, row) => {
+        const fixed = ['Housing', 'Utilities', 'Transport']
+        return fixed.includes(row.name) ? sum + row.amount : sum
+      }, 0) || 0
+      const monthly = income - fixedExpenses
+      setWeeklyBudget(Math.round(monthly / 4.3))
+    }
   }
 
   const [weeklyBudget, setWeeklyBudget] = useState(null)
