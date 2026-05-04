@@ -46,7 +46,7 @@ nav {
   font-family: var(--font-playfair), serif;
   font-size: 1.25rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .nav-right {
@@ -69,7 +69,7 @@ nav {
 
 .nav-cta {
   opacity: 1 !important;
-  border: 1px solid var(--accent) !important; color: var(--accent)
+  border: 1px solid var(--accent) !important; color: var(--accent) !important;
   padding: .45rem 1.1rem;
 }
 
@@ -328,7 +328,7 @@ nav {
 }
 
 .p-btn:hover { border-color: var(--ink); }
-.p-btn.strong { background: var(--accent); color: var(--white); border-color: var(--accent); }
+.p-btn.strong { background: var(--ink); color: var(--white); border-color: var(--ink); }
 .p-btn.strong:hover { opacity: .75; }
 
 /* CLOSING */
