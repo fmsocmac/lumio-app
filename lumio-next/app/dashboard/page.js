@@ -36,15 +36,16 @@ export default function Dashboard() {
     if (data) {
       setPlan(data)
       const saved = localStorage.getItem('lumio_user')
-      const income = saved ? parseFloat(JSON.parse(saved).income) : 0
-      const fixedExpenses = data.budget?.rows?.reduce((sum, row) => {
-        const fixed = ['Housing', 'Utilities', 'Transport']
-        return fixed.includes(row.name) ? sum + row.amount : sum
-      }, 0) || 0
-      const monthly = income - fixedExpenses
+    if (saved) {
+      const u = JSON.parse(saved)
+      const income = parseFloat(u.income) || 0
+      const housing = parseFloat(u.housing) || 0
+      const transport = parseFloat(u.transport) || 0
+      const utilities = parseFloat(u.utilities) || 0
+      const fixed = housing + transport + utilities
+      const monthly = income - fixed
       setWeeklyBudget(Math.round(monthly / 4.3))
     }
-  }
 
   const [weeklyBudget, setWeeklyBudget] = useState(null)
 
