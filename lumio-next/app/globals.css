@@ -629,6 +629,7 @@ footer {
   .ob-body { padding: 2.5rem 1.5rem 3rem; }
   .ob-row2 { grid-template-columns: 1fr; gap: 1.5rem; }
 }
+
 /* PLAN PAGE */
 .plan-loading {
   min-height: 100vh;
@@ -819,6 +820,18 @@ footer {
 
 .b-tag.warn { border-color: #c8843a; color: #c8843a; opacity: 1; }
 .b-tag.good { border-color: #3a7d5f; color: #3a7d5f; opacity: 1; }
+
+/* WHAT IF */
+.dash-whatif { margin-top: 2rem; }
+.dash-whatif-card { background: var(--white); border: 1px solid var(--rule); padding: 1.6rem; }
+.dash-whatif-desc { font-size: 0.78rem; color: var(--ink); opacity: 0.45; line-height: 1.7; margin-bottom: 1.2rem; }
+.dash-whatif-input-row { display: flex; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.dash-whatif-input { flex: 1; background: var(--white); border: none; padding: 0.9rem 1rem; font-family: var(--font-instrument), sans-serif; font-size: 0.85rem; color: var(--ink); outline: none; }
+.dash-whatif-input::placeholder { color: var(--ink); opacity: 0.25; }
+.dash-whatif-btn { background: var(--ink); color: var(--bg); border: none; padding: 0.9rem 1.4rem; font-family: var(--font-instrument), sans-serif; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; flex-shrink: 0; }
+.dash-whatif-btn:hover:not(:disabled) { opacity: 0.75; }
+.dash-whatif-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.dash-whatif-result { margin-top: 1.2rem; font-family: var(--font-playfair), serif; font-style: italic; font-size: 0.92rem; color: var(--ink); opacity: 0.7; line-height: 1.75; }
 
 .panel-advice {
   font-size: .85rem;

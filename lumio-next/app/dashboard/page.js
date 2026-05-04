@@ -6,6 +6,9 @@ import { supabase } from '../../lib/supabase'
 export default function Dashboard() {
   const [name, setName] = useState('there')
   const [plan, setPlan] = useState(null)
+  const [whatIf, setWhatIf] = useState('')
+  const [whatIfResult, setWhatIfResult] = useState('')
+  const [whatIfLoading, setWhatIfLoading] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('lumio_user')
@@ -46,6 +49,42 @@ export default function Dashboard() {
     if (hour < 17) return 'Good afternoon'
     return 'Good evening'
   }
+  const [whatIf, setWhatIf] = useState('')
+  const [whatIfResult, setWhatIfResult] = useState('')
+  const [whatIfLoading, setWhatIfLoading] = useState(false)
+
+  async function analyseWhatIf() {
+    if (!whatIf.trim() || whatIfLoading) return
+    setWhatIfLoading(true)
+    setWhatIfResult('')
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 300,
+          messages: [{
+            role: 'user',
+            content: `You are Lumio, a personal financial advisor. The user's financial plan: ${JSON.stringify(plan)}. 
+            
+  The user is asking: "${whatIf}"
+
+  Respond in 2-3 sentences. Be specific with numbers. Tell them exactly how this purchase affects their goals and timeline. Be honest but not discouraging.`
+          }]
+        })
+      })
+      const data = await res.json()
+      const reply = data.content.map(b => b.text || '').join('').trim()
+      setWhatIfResult(reply)
+    } catch {
+      setWhatIfResult('Unable to analyse right now. Please try again.')
+    } finally {
+      setWhatIfLoading(false)
+    }
+  }
+
+  
 
   return (
     <div className="dash-wrap">
@@ -63,6 +102,28 @@ export default function Dashboard() {
           <p className="dash-date">{today}</p>
           <h1 className="dash-title">{getGreeting()}, <em>{name}.</em></h1>          
           {score && <p className="dash-insight">Your financial health score is <strong>{score}/10</strong>. Keep building toward your goals.</p>}
+          <div className="dash-whatif">
+            <p className="dash-cards-label">What if calculator</p>
+            <div className="dash-whatif-card">
+              <p className="dash-whatif-desc">Enter a hypothetical purchase and see how it affects your goals.</p>
+              <div className="dash-whatif-input-row">
+                <input
+                  className="dash-whatif-input"
+                  type="text"
+                  placeholder="e.g. I want to buy a $1,200 laptop"
+                  value={whatIf}
+                  onChange={e => setWhatIf(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && analyseWhatIf()}
+                />
+                <button className="dash-whatif-btn" onClick={analyseWhatIf} disabled={!whatIf.trim() || whatIfLoading}>
+                  {whatIfLoading ? '...' : 'Analyse'}
+                </button>
+              </div>
+              {whatIfResult && (
+                <p className="dash-whatif-result">{whatIfResult}</p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="dash-nw">
